@@ -1,4 +1,4 @@
-{ lib, fetchCrate, rustPlatform, darwin, stdenv }:
+{ lib, fetchCrate, rustPlatform, darwin, stdenv, pkg-config, udev }:
 
 rustPlatform.buildRustPackage rec {
   pname = "espflash";
@@ -9,7 +9,13 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-Aye2vsIVW96DvsJfz0Gt0zhY+zkb2pc30V6jIwRWANo=";
   };
 
-  buildInputs = lib.optionals stdenv.isDarwin [
+  nativeBuildInputs = [
+    pkg-config
+  ];
+
+  buildInputs = lib.optionals stdenv.isLinux [
+    udev
+  ] ++ lib.optionals stdenv.isDarwin [
     darwin.apple_sdk.frameworks.Security
   ];
 
